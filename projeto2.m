@@ -25,7 +25,7 @@ a1 = 10*wn; %fator de afastamento
 N = 15;
 
  %determinacao dos polos de malha fechada
-pmf = roots(conv([1 2*E*wn wn^2],[1 a1*wn]))
+pmf = roots(conv([1 2*E*wn wn^2],[1 a1*wn])) % retorna nessa ordem: polo real, polos complexos
 
 
 % c)
@@ -102,8 +102,15 @@ rankOb = rank(Ob);
 a0 = 4; 
 
 % e pólos do observador
+% pmf são os pólos da malha fechada. pmf[2] e [3] os complexos.
+% pmf Observador: 2 polos que serão a0*polos de segunda ordem da planta.
+% O terceiro como 10 vezes o valor da parte real dos polos de segunda ordem.
 
-Ob_pmf = 
+pc1 = a0*pmf(2); % polo complexo
+pc2 = a0*pmf(3); % polo complexo
+pr = 10*real(pc1); % polo real
+
+Ob_pmf = [pr pc1 pc2];
 
 % Discretização dos pólos do observador e determinação do polinômio característico discretizado.
 
