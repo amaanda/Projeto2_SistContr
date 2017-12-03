@@ -66,8 +66,11 @@ rankCo = rank(Co);
 % matriz transf de similaridade P
 % elder pg 104, kuo pg 118 pra frente
 
-e = transpose(eig(A));
-P = [1 1 1; e; e.^2;] % n = 3, até .^(n-1)
+q3 = B;
+q2 = A*q3 + 3*q3;
+q1 = A*q2 + q3;
+Q = [q1 q2 q3];
+P = inv(Q);
 
 % forma canônica controlável
 % Mathworks: The A,B,C,D matrices are returned in controller canonical form. https://www.mathworks.com/help/signal/ref/tf2ss.html
@@ -96,8 +99,13 @@ rankOb = rank(Ob);
 
 % b) escolha do fator de rapidez do observador
 
-
+a0 = 4; 
 
 % e pólos do observador
 
+Ob_pmf = 
+
 % Discretização dos pólos do observador e determinação do polinômio característico discretizado.
+
+Ob_pmfd = exp(Ob_pmf.*T)
+
