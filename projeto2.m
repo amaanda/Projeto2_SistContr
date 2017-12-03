@@ -36,7 +36,7 @@ T = (2*pi)/(wn*N*sqrt(1 - E^2))
 %z = e^st
 pmfd = exp(pmf.*T)
 
-%determinação do polinômmio característico de malha fechada discretizado
+%determinação do polinômio característico de malha fechada discretizado
 %equação caracteristica discretizada
 eqdisc = conv(conv([1 - pmfd(1)],[1 - pmfd(2)]),[1 - pmfd(3)])
 
@@ -66,7 +66,8 @@ rankCo = rank(Co);
 % matriz transf de similaridade P
 % elder pg 104, kuo pg 118 pra frente
 
-P =
+e = transpose(eig(A));
+P = [1 1 1; e; e.^2;] % n = 3, até .^(n-1)
 
 % forma canônica controlável
 % Mathworks: The A,B,C,D matrices are returned in controller canonical form. https://www.mathworks.com/help/signal/ref/tf2ss.html
@@ -75,7 +76,8 @@ P =
 
 % c) determinação do vetores de ganhos de realimentação Kbarra e K. Autovalores de A-bK.
 
-K = 
+%% pmf polos de malha fechada da questão 1
+K = place(A,B,pmf);
 Kbarra = K*inv(P);
 
 func = det(A-(B*K));
