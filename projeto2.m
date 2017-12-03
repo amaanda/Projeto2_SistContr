@@ -2,9 +2,23 @@
 %Segundo projeto da disciplina sistema de controle - código relacionado a espaços de estados
 %Adriele Ramos
 
-%% ------------------------------------------- QUESTÃO 1
+%Parâmetros
+R = 3.33;
+L = 4.56*(10^-3);
+j = 4.96*(10^-5);
+b = 4.59*(10^-5);
+K = 0.0332;
 
-%% b) escolha dos dados
+%Matrizes de equação de estado motor cc
+A = [-R/L -K/L 0; K/j b/j 0; 0 1 0];
+B = [1/L;0;0];
+C = [0 0 1];
+D = [0];
+
+syms z;
+
+%% -----------------------------------------QUESTÃO 1
+% b) escolha dos dados
 E  = 0.8; %coeficiente de amortecimento
 wn = 2; %frequencia natural
 a1 = 10*wn; %fator de afastamento
@@ -13,14 +27,26 @@ N = 15;
  %determinacao dos polos de malha fechada
 pmf = roots(conv([1 2*E*wn wn^2],[1 a1*wn]))
 
-%% c)
+
+% c)
 %determinacao do tempo de amostragem
-T = (2*pi)/(wn*N*sqrtm(1 - E^2))
+T = (2*pi)/(wn*N*sqrt(1 - E^2))
 
 %discretização dos polos de malha fechada: mapeamento de polo-zero 
 %z = e^st
+pmfd = exp(pmf.*T)
 
-pmfd = conv(conv([1 - e^-pmf(1)*T],[1 - e^-pmf(2)*T]),[1 - e^-pmf(3)*T])
+%determinação do polinômmio característico de malha fechada discretizado
+%equação caracteristica discretizada
+eqdisc = conv(conv([1 - pmfd(1)],[1 - pmfd(2)]),[1 - pmfd(3)])
+
+%discretização da equação de estados do motor cc
+sysG = ss(A,B,C,D) %matrizes equação de estado
+sysGd = c2d(sysG, T) %discretização por zoh - conforme Franklin (discreto)
+
+%polinômeio característico da dinâmica do motor cc
+[num,den] = ss2tf(A,B,C,D) %equação característica a partir das matrizes de ss - retorna coeficientes do numerador e denominador
+
 
 
 %% ------------------------------------------- QUESTÃO 2
