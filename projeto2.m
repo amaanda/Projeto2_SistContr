@@ -2,23 +2,9 @@
 %Segundo projeto da disciplina sistema de controle - código relacionado a espaços de estados
 %Adriele Ramos
 
-%Parâmetros
-R = 3.33;
-L = 4.56*(10^-3);
-j = 4.96*(10^-5);
-b = 4.59*(10^-5);
-K = 0.0332;
+%% ------------------------------------------- QUESTÃO 1
 
-%Matrizes de equação de estado motor cc
-A = [-R/L -K/L 0; K/j b/j 0; 0 1 0];
-B = [1/L;0;0];
-C = [0 0 1];
-D = [0];
-
-syms z;
-
-%% -----------------------------------------QUESTÃO 1
-% b) escolha dos dados
+%% b) escolha dos dados
 E  = 0.8; %coeficiente de amortecimento
 wn = 2; %frequencia natural
 a1 = 10*wn; %fator de afastamento
@@ -27,26 +13,14 @@ N = 15;
  %determinacao dos polos de malha fechada
 pmf = roots(conv([1 2*E*wn wn^2],[1 a1*wn]))
 
-
-% c)
+%% c)
 %determinacao do tempo de amostragem
-T = (2*pi)/(wn*N*sqrt(1 - E^2))
+T = (2*pi)/(wn*N*sqrtm(1 - E^2))
 
 %discretização dos polos de malha fechada: mapeamento de polo-zero 
 %z = e^st
-pmfd = exp(pmf.*T)
 
-%determinação do polinômmio característico de malha fechada discretizado
-%equação caracteristica discretizada
-eqdisc = conv(conv([1 - pmfd(1)],[1 - pmfd(2)]),[1 - pmfd(3)])
-
-%discretização da equação de estados do motor cc
-sysG = ss(A,B,C,D) %matrizes equação de estado
-sysGd = c2d(sysG, T) %discretização por zoh - conforme Franklin (discreto)
-
-%polinômeio característico da dinâmica do motor cc
-[num,den] = ss2tf(A,B,C,D) %equação característica a partir das matrizes de ss - retorna coeficientes do numerador e denominador
-
+pmfd = conv(conv([1 - e^-pmf(1)*T],[1 - e^-pmf(2)*T]),[1 - e^-pmf(3)*T])
 
 
 %% ------------------------------------------- QUESTÃO 2
@@ -55,32 +29,47 @@ sysGd = c2d(sysG, T) %discretização por zoh - conforme Franklin (discreto)
 
 A = [] % matriz 
 B = [] % matriz
-Q = [B A*B A^2*B] % matriz de controlabilidade
+Co = ctrb(A,B); % matriz de controlabilidade
 
 % Sistema tem ordem n. Se a matriz Q for de posto (número de linhas ou colunas LI) n, é controlável. rank = posto.
 
-rankQ = rank(Q)
+rankCo = rank(Co);
 
 % b) matriz transformação de similaridade; e forma canônica controlável do motor cc.
 
 % matriz transf de similaridade P
-% Atransf = (inv(P))*A*P
+% elder pg 104, kuo pg 118 pra frente
+
+P =
 
 % forma canônica controlável
 % Mathworks: The A,B,C,D matrices are returned in controller canonical form. https://www.mathworks.com/help/signal/ref/tf2ss.html
 
-[A,B,C,D] = tf2ss(num,den) % num e den: da TF de malha fechada. 
+[A,B,C,D] = tf2ss(num,den); % num e den: da TF de malha fechada. 
 
 % c) determinação do vetores de ganhos de realimentação Kbarra e K. Autovalores de A-bK.
 
 K = 
-Kbarra = K*inv(P)
+Kbarra = K*inv(P);
 
-func = det(A-(B*K))
-autovalres = roots(func)
+func = det(A-(B*K));
+autovalores = roots(func);
 
 % d) simulações da realimentação e análise em regime permanente
 
 % simulink
 
 %% ------------------------------------------- QUESTÃO 3
+
+% a) o motor é observável?
+
+Ob = obsv(A,C);
+rankOb = rank(Ob);
+
+% b) escolha do fator de rapidez do observador
+
+
+
+% e pólos do observador
+
+% Discretização dos pólos do observador e determinação do polinômio característico discretizado.
