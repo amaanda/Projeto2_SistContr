@@ -115,4 +115,12 @@ Ob_pmf = [pr pc1 pc2];
 % Discretização dos pólos do observador e determinação do polinômio característico discretizado.
 
 Ob_pmfd = exp(Ob_pmf.*T)
+Ob_eqdisc = conv(conv([1 - Ob_pmfd(1)],[1 - Ob_pmfd(2)]),[1 - Ob_pmfd(3)]);
 
+%% ------------------------------------------- QUESTÃO 4
+
+
+%% ------------------------------------------- QUESTÃO 5
+
+
+%% ------------------------------------------- QUESTÃO 6
