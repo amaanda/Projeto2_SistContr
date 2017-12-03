@@ -55,32 +55,47 @@ sysGd = c2d(sysG, T) %discretização por zoh - conforme Franklin (discreto)
 
 A = [] % matriz 
 B = [] % matriz
-Q = [B A*B A^2*B] % matriz de controlabilidade
+Co = ctrb(A,B); % matriz de controlabilidade
 
 % Sistema tem ordem n. Se a matriz Q for de posto (número de linhas ou colunas LI) n, é controlável. rank = posto.
 
-rankQ = rank(Q)
+rankCo = rank(Co);
 
 % b) matriz transformação de similaridade; e forma canônica controlável do motor cc.
 
 % matriz transf de similaridade P
-% Atransf = (inv(P))*A*P
+% elder pg 104, kuo pg 118 pra frente
+
+P =
 
 % forma canônica controlável
 % Mathworks: The A,B,C,D matrices are returned in controller canonical form. https://www.mathworks.com/help/signal/ref/tf2ss.html
 
-[A,B,C,D] = tf2ss(num,den) % num e den: da TF de malha fechada. 
+[A,B,C,D] = tf2ss(num,den); % num e den: da TF de malha fechada. 
 
 % c) determinação do vetores de ganhos de realimentação Kbarra e K. Autovalores de A-bK.
 
 K = 
-Kbarra = K*inv(P)
+Kbarra = K*inv(P);
 
-func = det(A-(B*K))
-autovalres = roots(func)
+func = det(A-(B*K));
+autovalores = roots(func);
 
 % d) simulações da realimentação e análise em regime permanente
 
 % simulink
 
 %% ------------------------------------------- QUESTÃO 3
+
+% a) o motor é observável?
+
+Ob = obsv(A,C);
+rankOb = rank(Ob);
+
+% b) escolha do fator de rapidez do observador
+
+
+
+% e pólos do observador
+
+% Discretização dos pólos do observador e determinação do polinômio característico discretizado.
