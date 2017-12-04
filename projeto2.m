@@ -114,6 +114,14 @@ Ob_eqdisc = conv(conv([1 - Ob_pmfd(1)],[1 - Ob_pmfd(2)]),[1 - Ob_pmfd(3)]);
 
 % c) determinação dos vetores de ganhos Lbarra e L.
 
+polinomio = conv(conv([1 - Ob_eqdisc(1)],[1 - Ob_eqdisc(2)]),[1 - Ob_eqdisc(3)]);
+alfasbarra = transpose(roots(polinomio));
+alfas = transpose(roots(pc));
+
+LbarraT = [alfasbarra-alfas];
+Lbarra = transpose(LbarraT);
+
+L = inv(P)*Lbarra;
 
 
 %% ------------------------------------------- QUESTÃO 4
