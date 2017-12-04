@@ -115,16 +115,23 @@ Ob_eqdisc = conv(conv([1 - Ob_pmfd(1)],[1 - Ob_pmfd(2)]),[1 - Ob_pmfd(3)]);
 % c) determinação dos vetores de ganhos Lbarra e L.
 
 polinomio = conv(conv([1 - Ob_eqdisc(1)],[1 - Ob_eqdisc(2)]),[1 - Ob_eqdisc(3)]);
-alfasbarra = transpose(roots(polinomio));
-alfas = transpose(roots(pc));
+alfasbarra = transpose(roots(polinomio)); % roots retorna vetor coluna
+alfas = transpose(roots(pc)); % roots retorna vetor coluna
 
 LbarraT = [alfasbarra-alfas];
 Lbarra = transpose(LbarraT);
 
 L = inv(P)*Lbarra;
 
+% d) simulações da realimentação e análise em regime permanente
+
+% simulink
 
 %% ------------------------------------------- QUESTÃO 4
+% ORDEM n - 1
+
+% a) escolha do fator de rapidez do observador; e pólos do observador.
+
 
 
 %% ------------------------------------------- QUESTÃO 5
