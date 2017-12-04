@@ -104,20 +104,17 @@ rankOb = rank(Ob);
 a0 = 4; 
 
 % e pólos do observador
-% pmf são os pólos da malha fechada. pmf[2] e [3] os complexos.
-% pmf Observador: 2 polos que serão a0*polos de segunda ordem da planta.
-% O terceiro como 10 vezes o valor da parte real dos polos de segunda ordem.
 
-pc1 = a0*pmf(2); % polo complexo
-pc2 = a0*pmf(3); % polo complexo
-pr = 10*real(pc1); % polo real
-
-Ob_pmf = [pr pc1 pc2];
+Ob_pmf = roots(conv([1 2*E*a0*wn wn^2],[1 a1*a0*wn])) % retorna nessa ordem: polo real, polos complexos
 
 % Discretização dos pólos do observador e determinação do polinômio característico discretizado.
 
 Ob_pmfd = exp(Ob_pmf.*T)
 Ob_eqdisc = conv(conv([1 - Ob_pmfd(1)],[1 - Ob_pmfd(2)]),[1 - Ob_pmfd(3)]);
+
+% c) determinação dos vetores de ganhos Lbarra e L.
+
+
 
 %% ------------------------------------------- QUESTÃO 4
 
