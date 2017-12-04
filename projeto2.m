@@ -21,7 +21,7 @@ syms z;
 % b) escolha dos dados
 E  = 0.8; %coeficiente de amortecimento
 wn = 2; %frequencia natural
-a1 = 10*wn; %fator de afastamento
+a1 = 10; %fator de afastamento
 N = 15;
 
  %determinacao dos polos de malha fechada
@@ -44,9 +44,10 @@ eqdisc = conv(conv([1 - pmfd(1)],[1 - pmfd(2)]),[1 - pmfd(3)])
 sysG = ss(A,B,C,D) %matrizes equação de estado
 sysGd = c2d(sysG, T) %discretização por zoh - conforme Franklin (discreto)
 
-%polinômeio característico da dinâmica do motor cc
-[num,den] = ss2tf(A,B,C,D) %equação característica a partir das matrizes de ss - retorna coeficientes do numerador e denominador
-
+%polinômio característico da dinâmica do motor cc
+tam = size(A);
+n = tam(1,1);
+pc = det(z*eye(n) -A)
 
 
 %% ------------------------------------------- QUESTÃO 2
@@ -75,6 +76,7 @@ P = inv(Q);
 % forma canônica controlável
 % Mathworks: The A,B,C,D matrices are returned in controller canonical form. https://www.mathworks.com/help/signal/ref/tf2ss.html
 
+[num,den] = ss2tf(A,B,C,D) %equação característica a partir das matrizes de ss - retorna coeficientes do numerador e denominador
 [A,B,C,D] = tf2ss(num,den); % num e den: da TF de malha fechada. 
 
 % c) determinação do vetores de ganhos de realimentação Kbarra e K. Autovalores de A-bK.
