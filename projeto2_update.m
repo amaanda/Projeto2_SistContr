@@ -17,6 +17,9 @@ D = [0];
 
 syms z;
 
+%representação em EE
+M = ss(A,B,C,D);
+
 %% -----------------------------------------QUESTÃO 1
 % b) escolha dos dados
 E  = 0.8; %coeficiente de amortecimento
@@ -49,16 +52,23 @@ tam = size(A);
 n = tam(1,1);
 [num,den] = ss2tf(A,B,C,D) %den são os coeficientes do polinomio característico
 
-pc = roots(den) %raízes polinomio característico
+pc = roots(den) %raízes polinomio característico = POLOS DA FT
 pcd = exp(pc.*T) %raizes polinomio caracteristico discretizadas
 eqdiscmot = conv(conv([1 - pcd(1)],[1 - pcd(2)]),[1 - pcd(3)]) %equação discretizada 
+
+% representação em EE do Motor Discretizado
+Md = c2d(M,T,'zoh');
+
+% Polinômio característico da dinâmica do motor CC de Ad (autovalores de A são os pólos do sistema)
+pca = poly(Md.A)
+
 %% ------------------------------------------- QUESTÃO 2
 
 % a) o motor cc é controlável? (elder pagina 58)
 
 %A = [] % matriz 
 %B = [] % matriz
-Co = ctrb(A,B); % matriz de controlabilidade
+Co = ctrb(Md.A,Md.B); % matriz de controlabilidade
 
 % Sistema tem ordem n. Se a matriz Q for de posto (número de linhas ou colunas LI) n, é controlável. rank = posto.
 
@@ -69,9 +79,13 @@ rankCo = rank(Co);
 % matriz transf de similaridade P
 % elder pg 104, kuo pg 118 pra frente
 
-q3 = B;
-q2 = A*q3 + 3*q3;
-q1 = A*q2 + q3;
+% a2 e a3 são coeficientes da equação discretizada do motor!!!!!
+a2 = pca(2);
+a3 = pca(3);
+
+q3 = Md.B;
+q2 = Md.A*q3 + a2*q3;
+q1 = Md.A*q2 + a3*q3;
 Q = [q1 q2 q3];
 P = inv(Q);
 
@@ -97,7 +111,7 @@ autovalores = roots(func);
 
 % a) o motor é observável?
 
-Ob = obsv(A,C);
+Ob = obsv(Md);
 rankOb = rank(Ob);
 
 % b) escolha do fator de rapidez do observador
